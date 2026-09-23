@@ -448,3 +448,11 @@ particlex normal minecraft:end_rod ~ ~1 ~ 1 1 1 1 0 0 0 1 1 1 100 600 "null" 1 m
    「text 实现方式」一节末尾，改 `TextUtil` / `GlTextRasterizer` 之前先看。
 5. 用 `_scratch-m3-39\gpu\launch.ps1` 起的实例会把 stdout 落到该目录的 `mc-HHmmss.log`；
    想数粒子用 `_scratch-m3-39\gpu\particles.ps1 -Command '...'`（走 jcmd 直方图差值，不依赖窗口）。
+6. **`text` 族在开着光影（Iris + iterationRP）的世界里会崩 N 卡驱动**（2026-09-24 实测，两次）：
+   游戏中第一次发 `particlex text ...`（含 `text-*` / `custom-*` 里任何走 TextUtil 的路径）时，
+   进程直接 `EXCEPTION_ACCESS_VIOLATION`，hs_err 的 Java 栈固定为
+   `TextUtil.requestImage → GlTextRasterizer.rasterize → GlStateManager._readPixels → nvoglv64.dll`。
+   同一份二进制在**世界加载前**的 `-Dexparticle.selftest=true` 自检里跑 GPU 光栅化是好的，
+   所以差异就是「光影包已经把 GL 状态接管之后」。**结论：任何要开光影的演出/数据包，都不要用
+   `text` 族**——需要文字就离线渲染成 PNG 再走 `image-matrix`（`nbmachina` 的逐字与译文就是这么做的）。
+   只有 CPU 回退路径（见「text 实现方式」）没被验证过在光影下是否安全。
