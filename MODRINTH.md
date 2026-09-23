@@ -72,6 +72,64 @@ ExParticle 的 **Fabric 1.21.10 移植版**（非官方，基于上游 [hackermd
 - 与上游差分：17 条用例 16 条粒子数逐位一致；bold 差异为 MC 1.21.10 的版本语义
 ```
 
+## Project body — English（Modrinth 页面正文建议直接用这份）
+
+```markdown
+**Unofficial Fabric port** of [ExParticle](https://github.com/hackermdch/ExParticle) v1.5.2 (NeoForge 1.21.1),
+ported to **Minecraft 1.21.10 / Fabric**. Licensed **LGPL-3.0-only**, same as upstream.
+
+Drive particle motion with mathematical expressions: shapes, motion and colors are written as expressions and
+evaluated per particle per tick.
+
+## Commands
+
+`normal` / `conditional` / `parameter` / `polar-parameter` / `tick-*` / `rgba-*` /
+`custom-normal|parameter|image|conditional|video` / `image(-matrix)` / `video(-matrix)` / `text` /
+`group remove|change` / `clear-particle|clear-cache` / `global-variable` / `user-function`
+
+```
+/particlex normal minecraft:end_rod ~ ~1 ~ 1 1 1 1 0 0 0 1 1 1 500 600 "null" 1
+/particlex text   minecraft:end_rod ~ ~1 ~ "AB" 3 "null" 10 0 0 0 600
+/particlex image  minecraft:end_rod ~ ~1 ~ "test.png" 1 0 0 0 not 10 0 0 0 600
+```
+
+`image` / `video` read files from `<gamedir>/particleImages` and `<gamedir>/particleVideos`.
+The `video` command additionally requires JavaCV (drop its jars into `<gamedir>/javacv/`).
+
+## Differences from upstream
+
+1. **`text` uses a self-managed GPU offscreen rasterizer** — MC 1.21.6 removed the `TextureTarget`/legacy
+   projection API upstream relied on. Rendering goes through our own FBO (`#version 330 core`, pixel-space
+   vertices, `glReadPixels` readback) with a CPU software-rasterizer fallback.
+2. **`video` loads JavaCV through a child-first class loader** — five core jars are enough (upstream needs the
+   full JavaCV module chain plus JavaFX), and it works around upstream's `Java2DFrameConverter.convert()` NPE.
+3. **Bold text looks different from 1.21.1 upstream** — MC 1.21.10 changed bold to a single thicker pass; this
+   port follows 1.21.10.
+4. Differential test vs upstream: **16 of 17 cases are bit-identical**; the only exception is the bold difference above.
+
+## Requirements
+
+- Minecraft **1.21.10**, Fabric Loader **≥ 0.19.5**, **Fabric API** (required dependency), **Java ≥ 21**
+
+## Credits
+
+Upstream authored by **hackermdch** ([ExParticle](https://github.com/hackermdch/ExParticle), LGPL-3.0-only).
+This is a modified version published under the same license; source and modification notes are in the repository.
+```
+
+## Changelog — English
+
+```markdown
+### v1.5.2-fabric.1
+
+- Full port of ExParticle v1.5.2 to **Minecraft 1.21.10 / Fabric** (Loader ≥ 0.19.5, Java ≥ 21)
+- All command families available: normal / conditional / parameter / tick / rgba / custom-* / image(-matrix) /
+  video(-matrix) / text / group / clear-* / global-variable / user-function
+- `text`: self-managed GPU offscreen rasterization (MC 1.21.6+ removed upstream's TextureTarget path), CPU fallback
+- `video`: JavaCV loaded through a child-first class loader (five core jars), fixing upstream's `convert()` NPE
+- Differential testing vs upstream: 16 of 17 cases bit-identical particle counts; bold differs by MC version semantics
+```
+
 ## 合规与礼仪（上传前务必确认）
 
 1. **许可证必须选 LGPL-3.0-only**：本移植是上游的衍生作品，LGPL 要求修改版仍以同许可发布，并**提供源码**（仓库链接填到 Modrinth 的 Source 字段）。

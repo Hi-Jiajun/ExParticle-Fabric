@@ -1,3 +1,5 @@
+[**English**](README_EN.md) | 中文
+
 # ExParticle (Fabric 移植版)
 
 上游：[hackermdch/ExParticle](https://github.com/hackermdch/ExParticle) v1.5.2（NeoForge 1.21.1，LGPL-3.0-only）。
