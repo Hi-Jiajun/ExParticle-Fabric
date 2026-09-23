@@ -1,0 +1,8 @@
+.gradle/
+build/
+run/
+gradle-mirror.init.gradle
+*.log
+.idea/
+*.iml
+out/

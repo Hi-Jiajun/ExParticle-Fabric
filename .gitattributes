@@ -1,0 +1,8 @@
+# 统一换行：仓库内一律 LF，Windows 检出按需转换；但这两个必须在任何平台都保持 LF，否则 Linux/macOS 上无法执行
+* text=auto
+gradlew text eol=lf
+*.sh text eol=lf
+
+# 二进制资源不要当文本处理
+*.png binary
+*.jar binary

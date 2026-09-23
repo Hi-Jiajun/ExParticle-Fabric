@@ -1,0 +1,53 @@
+plugins {
+	// 1.21.10 时代的 Loom 插件 id
+	id 'net.fabricmc.fabric-loom-remap' version "${loom_version}"
+}
+
+version = project.mod_version
+group = project.maven_group
+
+base {
+	archivesName = project.archives_base_name
+}
+
+loom {
+	// 上游用 NeoForge access transformer 打开的原版成员（Particle.xd、NativeImage.pixels、
+	// ParticleEngine.makeParticle…）在这里等价迁移到 Fabric AW；dev 环境要在这里指路径，
+	// 否则编译期不生效（fabric.mod.json 里的声明只影响运行期）。
+	accessWidenerPath = file("src/main/resources/exparticle.accesswidener")
+}
+
+// 上游是 NeoForge + Mojang 官方映射。Fabric 侧同样用 Mojmap：
+// 上游 11k 行里对原版的引用（SingleQuadParticle / ParticleEngine / ClientLevel / Vec3…）
+// 因此绝大部分保持逐字不变，移植只需替换 NeoForge 胶水层 + 修 1.21.1→1.21.10 的 API 漂移。
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings loom.officialMojangMappings()
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+
+	// video 命令的桥接类（VideoDecoder）需要 JavaCV 的编译期符号；
+	// 运行期由 JavaCvSupport 从 gamedir/javacv 的子加载器装载，所以这里只 compileOnly，
+	// 且不拉传递依赖（javacv 完整依赖树含 opencv/openblas 等，编译期用不到）。
+	compileOnly("org.bytedeco:javacv:1.5.11") { transitive = false }
+	compileOnly("org.bytedeco:javacpp:1.5.11") { transitive = false }
+	compileOnly("org.bytedeco:ffmpeg:7.1-1.5.11") { transitive = false }
+}
+
+processResources {
+	inputs.property 'version', project.version
+	filesMatching('fabric.mod.json') {
+		expand 'version': project.version
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	options.release = 21
+	options.encoding = 'UTF-8'
+}
+
+java {
+	withSourcesJar()
+	sourceCompatibility = JavaVersion.VERSION_21
+	targetCompatibility = JavaVersion.VERSION_21
+}

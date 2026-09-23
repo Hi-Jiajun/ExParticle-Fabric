@@ -1,0 +1,39 @@
+accessWidener	v2	named
+
+# 上游 NeoForge 用 access transformer 打开的成员，这里等价迁移到 Fabric AW。
+# 注：本工程用的是 Mojang 官方映射（loom.officialMojangMappings()），
+# 所以 AW 里的名字就是 Mojmap 名。
+
+# ParticleUtil / GroupUtil 这类非 mixin 代码要直接读写粒子坐标与年龄
+accessible	field	net/minecraft/client/particle/Particle	x	D
+accessible	field	net/minecraft/client/particle/Particle	y	D
+accessible	field	net/minecraft/client/particle/Particle	z	D
+accessible	field	net/minecraft/client/particle/Particle	xd	D
+accessible	field	net/minecraft/client/particle/Particle	yd	D
+accessible	field	net/minecraft/client/particle/Particle	zd	D
+accessible	field	net/minecraft/client/particle/Particle	age	I
+
+# 1.21.10 把颜色/alpha 从 Particle 移到了 SingleQuadParticle
+accessible	field	net/minecraft/client/particle/SingleQuadParticle	rCol	F
+accessible	field	net/minecraft/client/particle/SingleQuadParticle	gCol	F
+accessible	field	net/minecraft/client/particle/SingleQuadParticle	bCol	F
+accessible	field	net/minecraft/client/particle/SingleQuadParticle	alpha	F
+
+# TextUtil：把 glReadPixels 的结果直接写进 NativeImage 的像素指针（1.21.10 起是 long）
+accessible	field	com/mojang/blaze3d/platform/NativeImage	pixels	J
+
+# ExParticleApi：「只造粒子、不入引擎」的语义需要私有的 makeParticle
+accessible	method	net/minecraft/client/particle/ParticleEngine	makeParticle	(Lnet/minecraft/core/particles/ParticleOptions;DDDDDD)Lnet/minecraft/client/particle/Particle;
+
+# text* 命令的软件光栅化需要字形度量/图集 UV（原版这些成员是包私有/私有）
+accessible	method	net/minecraft/client/gui/Font	getGlyph	(ILnet/minecraft/network/chat/Style;)Lnet/minecraft/client/gui/font/glyphs/BakedGlyph;
+accessible	field	net/minecraft/client/gui/font/glyphs/BakedSheetGlyph	u0	F
+accessible	field	net/minecraft/client/gui/font/glyphs/BakedSheetGlyph	u1	F
+accessible	field	net/minecraft/client/gui/font/glyphs/BakedSheetGlyph	v0	F
+accessible	field	net/minecraft/client/gui/font/glyphs/BakedSheetGlyph	v1	F
+accessible	field	net/minecraft/client/gui/font/glyphs/BakedSheetGlyph	left	F
+accessible	field	net/minecraft/client/gui/font/glyphs/BakedSheetGlyph	right	F
+accessible	field	net/minecraft/client/gui/font/glyphs/BakedSheetGlyph	up	F
+accessible	field	net/minecraft/client/gui/font/glyphs/BakedSheetGlyph	down	F
+accessible	field	net/minecraft/client/gui/font/glyphs/BakedSheetGlyph	textureView	Lcom/mojang/blaze3d/textures/GpuTextureView;
+accessible	field	net/minecraft/client/gui/font/glyphs/BakedSheetGlyph	renderTypes	Lnet/minecraft/client/gui/font/GlyphRenderTypes;
