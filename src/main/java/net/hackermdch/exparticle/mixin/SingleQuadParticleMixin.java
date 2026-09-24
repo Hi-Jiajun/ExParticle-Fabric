@@ -1,6 +1,8 @@
 package net.hackermdch.exparticle.mixin;
 
 import net.hackermdch.exparticle.util.IParticle;
+import net.hackermdch.exparticle.util.SpriteAccessor;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.particle.SingleQuadParticle;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -16,7 +18,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  * （ParticleMixin 里只有空实现），尺寸覆盖仍然注入 {@code getQuadSize}。
  */
 @Mixin(SingleQuadParticle.class)
-public abstract class SingleQuadParticleMixin implements IParticle {
+public abstract class SingleQuadParticleMixin implements IParticle, SpriteAccessor {
+    @Shadow
+    protected TextureAtlasSprite sprite;
+
     @Shadow
     protected float rCol;
     @Shadow
@@ -65,5 +70,11 @@ public abstract class SingleQuadParticleMixin implements IParticle {
     @Override
     public float getAlphaValue() {
         return alpha;
+    }
+
+    /** 供子类 mixin（TerrainParticleMixin 等）取 sprite：见 {@link SpriteAccessor} 的说明。 */
+    @Override
+    public TextureAtlasSprite exarticle$sprite() {
+        return sprite;
     }
 }

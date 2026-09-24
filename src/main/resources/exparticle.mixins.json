@@ -10,7 +10,8 @@
     "ParticleGroupMixin",
     "ParticleMixin",
     "SimpleAnimatedParticleMixin",
-    "SingleQuadParticleMixin"
+    "SingleQuadParticleMixin",
+    "TerrainParticleMixin"
   ],
   "injectors": {
     "defaultRequire": 1
