@@ -11,6 +11,7 @@
     "ParticleMixin",
     "SimpleAnimatedParticleMixin",
     "SingleQuadParticleMixin",
+    "SingleQuadParticleSpriteAccessor",
     "TerrainParticleMixin"
   ],
   "injectors": {

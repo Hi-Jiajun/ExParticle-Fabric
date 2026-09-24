@@ -1,7 +1,6 @@
 package net.hackermdch.exparticle.mixin;
 
 import net.hackermdch.exparticle.util.IParticle;
-import net.hackermdch.exparticle.util.SpriteAccessor;
 import net.minecraft.client.particle.TerrainParticle;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -28,35 +27,35 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  */
 @Mixin(TerrainParticle.class)
 public abstract class TerrainParticleMixin implements IParticle {
-    private SpriteAccessor exarticle$spriteAccessor() {
-        return (SpriteAccessor) this;
+    private net.minecraft.client.renderer.texture.TextureAtlasSprite exarticle$spriteOf() {
+        return ((SingleQuadParticleSpriteAccessor) this).exarticle$sprite();
     }
 
     @Inject(method = "getU0", at = @At("HEAD"), cancellable = true)
     private void exarticle$fullSpriteU0(CallbackInfoReturnable<Float> cir) {
         if (!Double.isNaN(getCustomSize())) {
-            cir.setReturnValue(exarticle$spriteAccessor().exarticle$sprite().getU(0.0F));
+            cir.setReturnValue(exarticle$spriteOf().getU(0.0F));
         }
     }
 
     @Inject(method = "getU1", at = @At("HEAD"), cancellable = true)
     private void exarticle$fullSpriteU1(CallbackInfoReturnable<Float> cir) {
         if (!Double.isNaN(getCustomSize())) {
-            cir.setReturnValue(exarticle$spriteAccessor().exarticle$sprite().getU(1.0F));
+            cir.setReturnValue(exarticle$spriteOf().getU(1.0F));
         }
     }
 
     @Inject(method = "getV0", at = @At("HEAD"), cancellable = true)
     private void exarticle$fullSpriteV0(CallbackInfoReturnable<Float> cir) {
         if (!Double.isNaN(getCustomSize())) {
-            cir.setReturnValue(exarticle$spriteAccessor().exarticle$sprite().getV(0.0F));
+            cir.setReturnValue(exarticle$spriteOf().getV(0.0F));
         }
     }
 
     @Inject(method = "getV1", at = @At("HEAD"), cancellable = true)
     private void exarticle$fullSpriteV1(CallbackInfoReturnable<Float> cir) {
         if (!Double.isNaN(getCustomSize())) {
-            cir.setReturnValue(exarticle$spriteAccessor().exarticle$sprite().getV(1.0F));
+            cir.setReturnValue(exarticle$spriteOf().getV(1.0F));
         }
     }
 }
