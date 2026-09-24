@@ -34,28 +34,28 @@ public abstract class TerrainParticleMixin implements IParticle {
     @Inject(method = "getU0", at = @At("HEAD"), cancellable = true)
     private void exarticle$fullSpriteU0(CallbackInfoReturnable<Float> cir) {
         if (!Double.isNaN(getCustomSize())) {
-            cir.setReturnValue(exarticle$spriteOf().getU(0.0F));
+            cir.setReturnValue(exarticle$spriteOf().getU((float) getSpriteU0()));
         }
     }
 
     @Inject(method = "getU1", at = @At("HEAD"), cancellable = true)
     private void exarticle$fullSpriteU1(CallbackInfoReturnable<Float> cir) {
         if (!Double.isNaN(getCustomSize())) {
-            cir.setReturnValue(exarticle$spriteOf().getU(1.0F));
+            cir.setReturnValue(exarticle$spriteOf().getU((float) getSpriteU1()));
         }
     }
 
     @Inject(method = "getV0", at = @At("HEAD"), cancellable = true)
     private void exarticle$fullSpriteV0(CallbackInfoReturnable<Float> cir) {
         if (!Double.isNaN(getCustomSize())) {
-            cir.setReturnValue(exarticle$spriteOf().getV(0.0F));
+            cir.setReturnValue(exarticle$spriteOf().getV((float) getSpriteV0()));
         }
     }
 
     @Inject(method = "getV1", at = @At("HEAD"), cancellable = true)
     private void exarticle$fullSpriteV1(CallbackInfoReturnable<Float> cir) {
         if (!Double.isNaN(getCustomSize())) {
-            cir.setReturnValue(exarticle$spriteOf().getV(1.0F));
+            cir.setReturnValue(exarticle$spriteOf().getV((float) getSpriteV1()));
         }
     }
 }

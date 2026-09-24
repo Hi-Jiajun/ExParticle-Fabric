@@ -58,4 +58,19 @@ public interface IParticle {
     float getColorB();
 
     float getAlphaValue();
+
+    // === Fabric 移植新增：sprite 取景窗（u0,u1,v0,v1，归一化）===
+    // 用途（2026-09-24，nbmachina 开场）：**一颗粒子只画贴图的一块矩形**。
+    //   · 一整张封面 = 4×4 个 tile 粒子，每颗写自己的 u0..v1 → 可以"按块溶解/按块长出"，
+    //     而且全程 alpha=1（开光影时半透明板子暗部会整块消失，见上一条注释）；
+    //   · 默认值 0,1,0,1 = 整张贴图，对老效果完全无影响。
+    void setSpriteRegion(double u0, double u1, double v0, double v1);
+
+    double getSpriteU0();
+
+    double getSpriteU1();
+
+    double getSpriteV0();
+
+    double getSpriteV1();
 }

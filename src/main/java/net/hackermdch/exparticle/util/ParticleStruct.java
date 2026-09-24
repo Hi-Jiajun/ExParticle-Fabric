@@ -32,6 +32,12 @@ public class ParticleStruct {
     public double ds2;
     public double ddis;
     public double destroy;
+    // ── sprite 取景窗（归一化；默认 = 整张贴图）──
+    // 表达式里直接写 u0/u1/v0/v1 即可；只有 TerrainParticle 那条路会去读（见 TerrainParticleMixin）。
+    public double u0 = 0.0;
+    public double u1 = 1.0;
+    public double v0 = 0.0;
+    public double v1 = 1.0;
     // ── 镜头参照（每刻由 CameraRef 写入，见该类说明）──
     /** 玩家眼位（世界坐标）。 */
     public double px;

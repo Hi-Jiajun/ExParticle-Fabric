@@ -59,6 +59,14 @@ public abstract class ParticleMixin implements IParticle {
     private double customLight = Double.NaN;
     @Unique
     private Supplier<Vec3> bindCenter;
+    @Unique
+    private double spriteU0 = 0.0;
+    @Unique
+    private double spriteU1 = 1.0;
+    @Unique
+    private double spriteV0 = 0.0;
+    @Unique
+    private double spriteV1 = 1.0;
 
     @Override
     public void setExe(IExecutable exe) {
@@ -197,6 +205,8 @@ public abstract class ParticleMixin implements IParticle {
             }
             if (!Double.isNaN(data.size) && data.size != customSize) setCustomSize(data.size);
             if (!Double.isNaN(data.light) && data.light != customLight) setCustomLight(data.light);
+            // sprite 取景窗（默认 0,1,0,1 = 整张）：表达式直接写 u0/u1/v0/v1 就能只画一块贴图
+            setSpriteRegion(data.u0, data.u1, data.v0, data.v1);
             if (bindCenter != null) {
                 var nc = bindCenter.get();
                 var dis = nc.subtract(centerX, centerY, centerZ);
@@ -235,6 +245,34 @@ public abstract class ParticleMixin implements IParticle {
     @Override
     public void setBind(Supplier<Vec3> provider) {
         bindCenter = provider;
+    }
+
+    @Override
+    public void setSpriteRegion(double u0, double u1, double v0, double v1) {
+        spriteU0 = u0;
+        spriteU1 = u1;
+        spriteV0 = v0;
+        spriteV1 = v1;
+    }
+
+    @Override
+    public double getSpriteU0() {
+        return spriteU0;
+    }
+
+    @Override
+    public double getSpriteU1() {
+        return spriteU1;
+    }
+
+    @Override
+    public double getSpriteV0() {
+        return spriteV0;
+    }
+
+    @Override
+    public double getSpriteV1() {
+        return spriteV1;
     }
 
     // 非四边形粒子（BillboardParticle 之外的那些）没有颜色字段，这里给默认实现，
