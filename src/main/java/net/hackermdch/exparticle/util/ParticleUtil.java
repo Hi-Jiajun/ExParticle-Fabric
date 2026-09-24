@@ -275,6 +275,7 @@ public class ParticleUtil {
             var data = exe.getData();
             for (int i = 0; i < cpt && t <= end; t += step) {
                 data.t = t;
+                CameraRef.writeInto(data);
                 exe.invoke();
                 double dx;
                 double dy;
@@ -461,6 +462,7 @@ public class ParticleUtil {
             var data = exe.getData();
             for (int i = 0; i < cpt && t <= end; t += step, i++) {
                 data.t = t;
+                CameraRef.writeInto(data);
                 exe.invoke();
                 double dx, dy, dz;
                 if (polar) {

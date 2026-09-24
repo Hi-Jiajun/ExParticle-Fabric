@@ -49,6 +49,8 @@ public class ExParticleClient implements ClientModInitializer {
         // 提前探测 gamedir/javacv：有 jar 就把桥接类挂到子加载器上
         JavaCvSupport.init();
         ClientTickEvents.START_CLIENT_TICK.register(client -> ParticleUtil.onStartClientTick());
+        // 镜头参照：每刻开头刷新一次，供表达式里的 px/py/pz、fx/fz、rx/rz、yaw 使用（见 CameraRef）
+        ClientTickEvents.START_CLIENT_TICK.register(client -> net.hackermdch.exparticle.util.CameraRef.tick());
         ClientTickEvents.END_CLIENT_TICK.register(client -> ParticleUtil.onEndClientTick());
         // text* 命令的离屏字体绘制由 GuiRendererMixin 在 GUI 执行阶段驱动（见该 mixin 的说明）
         ClientTickEvents.END_CLIENT_TICK.register(client -> {

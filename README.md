@@ -412,6 +412,40 @@ particlex normal minecraft:end_rod ~ ~1 ~ 1 1 1 1 0 0 0 1 1 1 100 600 "null" 1 m
 解码 29/30 帧、144 颗；`custom-parameter polar` + `custom-image` + `custom-conditional` 三条
 连发 → 354 颗、无报错。
 
+#### 镜头参照变量（2026-09-24 新增，做"屏幕锁定"用）
+
+表达式里可以读这几个**只读变量**（每客户端刻由 `CameraRef` 刷新，见 `util/CameraRef.java`；
+名字自动来自 `ParticleStruct` 的 public 字段，`CodeGen` 的 FIELDS 表会带上它们）：
+
+| 变量 | 含义 |
+|---|---|
+| `px, py, pz` | 玩家眼位（世界坐标） |
+| `fx, fz` | 视线**水平**前方向（单位向量，已去掉俯仰） |
+| `rx, rz` | 视线**水平**右方向（单位向量） |
+| `yaw` | 偏航角（弧度，MC 约定 0 = +z） |
+
+典型用法（把一颗粒子钉在"眼前 D 格、画面正中"，跟着镜头飞）：
+
+```
+particlex image-matrix minecraft:block{block_state:"minecraft:white_concrete"} ~ ~ ~ \
+  "styx-1px.png" 1.0 "E4" 1 0 0 0 1200 \
+  "size=64; alpha=1; vx=(px+fx*13.5)-(cx+x);vy=py+0.5-(cy+y);vz=(pz+fz*13.5)-(cz+z)" 1.0
+```
+
+* 写成**"目标 − 当前"**（`vx = 目标 − (cx+x)`，因为 `data.x = 粒子 − 中心`）而不是增量：
+  每刻重算，天然自纠偏、不累积漂移。
+* 要让点阵/多点阵整体跟着镜头转身，就把每颗点的**发射时平面偏移**投影到当前基向量上：
+  `+rx*(r0x*dx+r0z*dz)`（水平，`r0x/r0z` = 发射时的相机右向，写死在表达式里）、`+dy`（竖直）。
+* ⚠ 这是**刻级**锁定（粒子每刻定位一次，镜头逐帧插值）：飞行速度很快时会有约"一刻位移"的跟拍误差。
+  实测在 13.5 格、10 格/秒的前飞下，板子边缘 1.6 秒内只差 0–1 px（可忽略）。
+
+#### 尺寸的真实语义（2026-09-24 实测修正）
+
+`size=` 的值单位是 1/8 格，但**渲染出来的四边形 ≈ size/4 格**（`SingleQuadParticle` 把
+`getQuadSize()` 当**半边长**用）。实测：`size=64` 的板子在 13.5 格外宽 671px，而同帧 6 格外
+1×1 红石块 101px → 板子 ≈ 15 格。`image-matrix`/`image` 那侧的排布是 `像素/dpb` 格，**没有这个 2 倍**，
+所以要让点阵正好盖住 `size=64` 的板子，得用 `像素/dpb = 16`（如 128px + `dpb=8`）。
+
 - `-Dexparticle.selftest=true`：进世界后自动跑一次 text 的 CPU/GPU 对照并打日志（含 GPU 的 ASCII 像素图）。
 - `-Dexparticle.gpuText=true`：把 GPU 离屏路径纳入对照运行（默认关闭，出图仍走 CPU）。
 - `-Dexparticle.selftest.commands=true`：**命令自驱动**——进世界后每 5 秒自动发送一条同族命令变体

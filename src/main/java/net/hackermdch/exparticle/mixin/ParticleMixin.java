@@ -1,6 +1,7 @@
 package net.hackermdch.exparticle.mixin;
 
 import net.hackermdch.exparticle.util.ClientMessageUtil;
+import net.hackermdch.exparticle.util.CameraRef;
 import net.hackermdch.exparticle.util.IExecutable;
 import net.hackermdch.exparticle.util.IParticle;
 import net.minecraft.client.particle.Particle;
@@ -182,6 +183,7 @@ public abstract class ParticleMixin implements IParticle {
             data.s2 = Math.atan2(y - centerY, Math.hypot(x - centerX, z - centerZ));
             data.t = moveT;
             moveT += step;
+            CameraRef.writeInto(data);
             try {
                 exe.invoke();
             } catch (RuntimeException e) {
